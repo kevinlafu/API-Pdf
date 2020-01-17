@@ -11,6 +11,27 @@
 |
 */
 
+use VerumConsilium\Browsershot\Facades\PDF;
+use Spatie\Browsershot\Browsershot as PDFB;
+
+
+
+
 Route::get('/', function () {
     return view('welcome');
+});
+
+Route::get('/pdf',function(){
+    $pdf = PDFB::html("<p>hola</p>")
+    ->setNodeBinary(env('NODEJS_PATH','/usr/bin/node'))
+    ->setNpmBinary(env('NPM_PATH','/usr/bin/npm'))
+    ->noSandbox()
+    ->format('A4')
+    ->margins(10, 10, 10, 10)
+    ->pdf();
+    $fileName= 'prueba.pdf';
+    return new Response($pdf, 200, array(
+        'Content-Type' => 'application/pdf',
+        'Content-Disposition' =>  'attachment; filename="'.$fileName.'"'
+    ));
 });
